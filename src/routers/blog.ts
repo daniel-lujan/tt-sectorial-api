@@ -8,12 +8,15 @@ import {
   addTopicSchema,
 } from '../schemas/json-schemas';
 import {
+  activateCategoryQuerySchema,
   deleteCategorySchema,
   deleteSubcategorySchema,
   deleteTopicSchema,
 } from '../schemas/query-params-schemas';
+import { activateCategorySchema } from '../schemas/path-params-schemas';
 import {
   validateBodySchema,
+  validatePathParamSchemas,
   validateQueryParamSchemas,
 } from '../middlewares/validators';
 
@@ -24,6 +27,38 @@ blogRouter.get('/categories', async (req, res) => {
 
   res.json(categories);
 });
+
+blogRouter.put(
+  '/categories/:id/activate',
+  validatePathParamSchemas(activateCategorySchema),
+  validateQueryParamSchemas(activateCategoryQuerySchema),
+  async (
+    req: ParsedRequest<
+      z.infer<typeof activateCategorySchema>,
+      z.infer<typeof activateCategoryQuerySchema>,
+      unknown
+    >,
+    res
+  ) => {
+    const { id } = req.params;
+    const { value } = req.query;
+
+    console.log({ id, value });
+
+    await Category.updateOne(
+      {
+        _id: id,
+      },
+      {
+        $set: {
+          isActive: value === 'true' ? true : false,
+        },
+      }
+    );
+
+    res.status(200).end();
+  }
+);
 
 blogRouter.post(
   '/categories',

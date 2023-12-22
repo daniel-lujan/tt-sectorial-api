@@ -14,3 +14,7 @@ export const deleteTopicSchema = z.object({
   subcategoryId: z.string(),
   topicId: z.string(),
 });
+
+export const activateCategoryQuerySchema = z.object({
+  value: z.enum(['true', 'false']),
+});
