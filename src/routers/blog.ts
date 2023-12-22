@@ -43,8 +43,6 @@ blogRouter.put(
     const { id } = req.params;
     const { value } = req.query;
 
-    console.log({ id, value });
-
     await Category.updateOne(
       {
         _id: id,
